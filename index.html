@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOTCRAFT - Professional Video Creation Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #ff6b6b, #ff8c42, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1.1em;
+        }
+
+        .pricing-notice {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ff8c42;
+        }
+
+        .stage-container {
+            background: rgba(20, 30, 50, 0.8);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .stage-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+
+        .stage-number {
+            background: linear-gradient(135deg, #ff6b6b, #ff8c42);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        textarea, input[type="text"], input[type="date"], input[type="time"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: #888;
+        }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #ffd93d;
+            box-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #ff6b6b, #ff8c42);
+            color: white;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-continue:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid #ff6b6b;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            transition: width 0.3s;
+        }
+
+        .stage-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stage-dot {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .stage-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .stage-dot.active {
+            background: linear-gradient(135deg, #ff6b6b, #ff8c42);
+            border-color: #ffd93d;
+            box-shadow: 0 0 15px rgba(255, 217, 61, 0.5);
+        }
+
+        .stage-dot.completed {
+            background: #4CAF50;
+            border-color: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: rgba(255, 217, 61, 0.1);
+            border-left: 4px solid #ffd93d;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            border-radius: 5px;
+            color: #90EE90;
+            margin-bottom: 20px;
+        }
+
+        .hashtag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .hashtag {
+            background: rgba(255, 107, 107, 0.3);
+            border: 1px solid #ff6b6b;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .hashtag:hover {
+            background: rgba(255, 107, 107, 0.5);
+            transform: scale(1.05);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ff6b6b;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .checkbox-item input {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .summary-box {
+            background: rgba(255, 217, 61, 0.1);
+            border: 2px solid #ffd93d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 217, 61, 0.3);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn-publish {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        .btn-publish:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .pricing-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ff8c42);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .grid-2, .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .stage-container {
+                padding: 20px;
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-list li:before {
+            content: "✅ ";
+            color: #4CAF50;
+            margin-right: 10px;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff8c42;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 SHOTCRAFT</h1>
+            <p>Professional Video Creation • 11 Stages • 50 Minutes</p>
+        </div>
+
+        <div class="pricing-banner">
+            🎉 BETA LAUNCH - FREE ACCESS | Coming Soon: Premium Plans (₹299-4999/month)
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="stage-selector" id="stageSelector"></div>
+
+        <!-- STAGE 1: Idea -->
+        <div id="stage1" class="stage-container">
+            <div class="stage-title">
+                <div class="stage-number">1</div>
+                <div>💡 Your Shot Idea</div>
+            </div>
+
+            <div class="info-box">
+                What's your video idea? Type anything - comedy, motivation, tutorial, anything!
+            </div>
+
+            <textarea id="idea" placeholder="Example: How I learned to code in 30 days..."></textarea>
+
+            <div class="feature-list">
+                <li>Quick starters available</li>
+                <li>AI will validate your idea</li>
+                <li>Suggest engaging angles</li>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-continue" onclick="goToStage(2)" id="btn1">Continue to Research →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 2: Research -->
+        <div id="stage2" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">2</div>
+                <div>🔍 Research & Angles</div>
+            </div>
+
+            <div class="info-box">
+                Add research points, statistics, personal experience, examples for your video.
+            </div>
+
+            <textarea id="research" placeholder="Add research points, data, examples, angles..."></textarea>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(1)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(3)" id="btn2">Continue to Script →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 3: Script -->
+        <div id="stage3" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">3</div>
+                <div>📝 Script Writing</div>
+            </div>
+
+            <div class="info-box">
+                Write your video script. Use simple language. Keep it engaging and concise.
+            </div>
+
+            <textarea id="script" placeholder="[0-5s] Hook: ...
+[5-15s] Story: ...
+[15-25s] Main content: ...
+[25-30s] Call to action: ..."></textarea>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(2)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(4)" id="btn3">Continue to Voice →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 4: Voiceover -->
+        <div id="stage4" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">4</div>
+                <div>🎙️ AI Voiceover</div>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label><strong>Voice Type:</strong></label>
+                    <select id="voiceStyle">
+                        <option value="male-deep">Male - Deep</option>
+                        <option value="male-energetic">Male - Energetic</option>
+                        <option value="female-calm">Female - Calm</option>
+                        <option value="female-energetic">Female - Energetic</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label><strong>Language:</strong></label>
+                    <select id="language">
+                        <option value="hindi">Hindi</option>
+                        <option value="hinglish">Hinglish</option>
+                        <option value="english">English</option>
+                        <option value="mix">Mix (Hindi+English)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="success-box">
+                ✅ Voiceover ready! Natural pronunciation with perfect timing.
+            </div>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(3)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(5)">Continue to Video →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 5: Video -->
+        <div id="stage5" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">5</div>
+                <div>🎬 Video Assembly</div>
+            </div>
+
+            <div class="info-box">
+                AI automatically finds images, adds music, creates captions, and assembles everything!
+            </div>
+
+            <div class="feature-list">
+                <li>Auto scene breakdown</li>
+                <li>Perfect image matching</li>
+                <li>Trending music & transitions</li>
+                <li>Auto captions generation</li>
+                <li>1080p quality export</li>
+            </div>
+
+            <div class="success-box">
+                ✅ Video ready! 30 seconds • 1080p quality • Ready to download!
+            </div>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(4)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(6)">Continue to Thumbnail →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 6: Thumbnail -->
+        <div id="stage6" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">6</div>
+                <div>🎨 Thumbnail Design</div>
+            </div>
+
+            <div class="info-box">
+                AI generates professional thumbnails with optimal colors, text, and layout.
+            </div>
+
+            <div style="background: #000; height: 200px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px dashed #ff6b6b;">
+                <p>Thumbnail Preview (1280x720)</p>
+            </div>
+
+            <div class="success-box">
+                ✅ Thumbnail ready! Multiple formats for different platforms.
+            </div>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(5)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(7)">Continue to Title →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 7: Title -->
+        <div id="stage7" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">7</div>
+                <div>📖 YouTube Title</div>
+            </div>
+
+            <div class="info-box">
+                AI generates viral-ready titles with curiosity gaps and power words.
+            </div>
+
+            <input type="text" id="title" placeholder="Enter your video title (60 characters max)" maxlength="60">
+            <p style="color: #888; font-size: 0.9em;">Character count: <span id="titleCount">0</span>/60</p>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(6)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(8)">Continue to Description →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 8: Description -->
+        <div id="stage8" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">8</div>
+                <div>📝 Video Description</div>
+            </div>
+
+            <div class="info-box">
+                AI writes SEO-optimized descriptions with hook, benefits, and call-to-action.
+            </div>
+
+            <textarea id="description" placeholder="AI will generate description here..." style="min-height: 150px;"></textarea>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(7)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(9)">Continue to Hashtags →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 9: Hashtags -->
+        <div id="stage9" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">9</div>
+                <div>🏷️ Hashtags</div>
+            </div>
+
+            <div class="info-box">
+                AI generates trending hashtags. Click to add/remove. Max 30 recommended.
+            </div>
+
+            <div class="hashtag-container" id="hashtagContainer">
+                <!-- Hashtags will be generated here -->
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 217, 61, 0.1); border-radius: 8px;">
+                <strong>Selected Hashtags:</strong>
+                <div id="selectedHashtags" style="margin-top: 10px; color: #ffd93d;"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(8)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(10)">Continue to Schedule →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 10: Schedule -->
+        <div id="stage10" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">10</div>
+                <div>📅 Schedule</div>
+            </div>
+
+            <div class="info-box">
+                Choose when to publish your video. AI recommends best times based on audience data.
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <label><strong>Date:</strong></label>
+                    <input type="date" id="scheduleDate">
+                </div>
+
+                <div>
+                    <label><strong>Time:</strong></label>
+                    <input type="time" id="scheduleTime">
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Best Times to Publish (India):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>8-9 AM (Morning scrollers)</li>
+                    <li>12-1 PM (Lunch break)</li>
+                    <li>5-6 PM (After office)</li>
+                    <li>9-11 PM (Prime time) ⭐</li>
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-back" onclick="goToStage(9)">← Back</button>
+                <button class="btn-continue" onclick="goToStage(11)">Continue to Publish →</button>
+            </div>
+        </div>
+
+        <!-- STAGE 11: Publish -->
+        <div id="stage11" class="stage-container hidden">
+            <div class="stage-title">
+                <div class="stage-number">11</div>
+                <div>🚀 Multi-Platform Publish</div>
+            </div>
+
+            <div class="info-box">
+                Select platforms. Video will auto-optimize for each. One click publish to all!
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="YouTube" checked> ▶️ YouTube Shorts
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="Instagram" checked> 📷 Instagram Reels
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="TikTok" checked> 🎵 TikTok
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="Facebook" checked> 👍 Facebook
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="LinkedIn"> 💼 LinkedIn
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" class="platform" value="Twitter"> 𝕏 Twitter
+                </label>
+            </div>
+
+            <div class="summary-box">
+                <strong>📋 Final Summary:</strong>
+                <div class="summary-item">
+                    <span>Title:</span>
+                    <span id="summaryTitle"></span>
+                </div>
+                <div class="summary-item">
+                    <span>Duration:</span>
+                    <span>30 seconds • 1080p</span>
+                </div>
+                <div class="summary-item">
+                    <span>Platforms:</span>
+                    <span id="summaryPlatforms"></span>
+                </div>
+                <div class="summary-item">
+                    <span>Schedule:</span>
+                    <span id="summarySchedule"></span>
+                </div>
+            </div>
+
+            <button class="btn-publish" onclick="publishVideo()">🎉 PUBLISH YOUR SHOT!</button>
+
+            <div class="button-group" style="margin-top: 10px;">
+                <button class="btn-back" onclick="goToStage(10)">← Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        const stages = 11;
+        let currentStage = 1;
+        let selectedHashtags = [];
+
+        function initializeStages() {
+            const selector = document.getElementById('stageSelector');
+            for (let i = 1; i <= stages; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'stage-dot active';
+                dot.textContent = i;
+                dot.onclick = () => goToStage(i);
+                selector.appendChild(dot);
+            }
+        }
+
+        function goToStage(stage) {
+            if (stage < currentStage) {
+                currentStage = stage;
+            } else {
+                if (!validateStage(currentStage)) return;
+                currentStage = stage;
+            }
+            updateUI();
+        }
+
+        function validateStage(stage) {
+            switch(stage) {
+                case 1:
+                    if (!document.getElementById('idea').value.trim()) {
+                        alert('Please enter your video idea!');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (!document.getElementById('research').value.trim()) {
+                        alert('Please add research points!');
+                        return false;
+                    }
+                    break;
+                case 3:
+                    if (!document.getElementById('script').value.trim()) {
+                        alert('Please write your script!');
+                        return false;
+                    }
+                    break;
+                case 7:
+                    if (!document.getElementById('title').value.trim()) {
+                        alert('Please enter a title!');
+                        return false;
+                    }
+                    break;
+                case 8:
+                    if (!document.getElementById('description').value.trim()) {
+                        alert('Please add description!');
+                        return false;
+                    }
+                    break;
+                case 10:
+                    if (!document.getElementById('scheduleDate').value || !document.getElementById('scheduleTime').value) {
+                        alert('Please select date and time!');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        function updateUI() {
+            // Hide all stages
+            for (let i = 1; i <= stages; i++) {
+                document.getElementById(`stage${i}`).classList.add('hidden');
+            }
+
+            // Show current stage
+            document.getElementById(`stage${currentStage}`).classList.remove('hidden');
+
+            // Update progress
+            const progress = (currentStage / stages) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update stage dots
+            document.querySelectorAll('.stage-dot').forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i + 1 === currentStage) {
+                    dot.classList.add('active');
+                } else if (i + 1 < currentStage) {
+                    dot.classList.add('completed');
+                }
+            });
+
+            // Generate hashtags on stage 9
+            if (currentStage === 9) {
+                generateHashtags();
+            }
+
+            // Generate description on stage 8
+            if (currentStage === 8) {
+                generateDescription();
+            }
+
+            // Update summary on stage 11
+            if (currentStage === 11) {
+                updateSummary();
+            }
+
+            // Update title count
+            if (currentStage === 7) {
+                document.getElementById('title').oninput = function() {
+                    document.getElementById('titleCount').textContent = this.value.length;
+                };
+            }
+        }
+
+        function generateHashtags() {
+            const defaultHashtags = [
+                '#YouTubeShorts', '#ContentCreation', '#VideoCreator', '#SocialMedia',
+                '#TikTok', '#InstagramReels', '#CreatorEconomy', '#DigitalContent',
+                '#ShortFormVideo', '#ContentMarketing', '#CreatorTips', '#VideoEditing',
+                '#OnlineBusiness', '#InfluencerLife', '#VloggerLife', '#ContentStrategy',
+                '#FYP', '#Viral', '#TrendingNow', '#MustWatch'
+            ];
+
+            const container = document.getElementById('hashtagContainer');
+            container.innerHTML = '';
+            
+            defaultHashtags.forEach(tag => {
+                const hashtag = document.createElement('div');
+                hashtag.className = 'hashtag';
+                hashtag.textContent = tag;
+                hashtag.onclick = () => toggleHashtag(tag, hashtag);
+                container.appendChild(hashtag);
+            });
+        }
+
+        function toggleHashtag(tag, element) {
+            if (selectedHashtags.includes(tag)) {
+                selectedHashtags = selectedHashtags.filter(t => t !== tag);
+                element.style.background = 'rgba(255, 107, 107, 0.3)';
+            } else {
+                if (selectedHashtags.length < 30) {
+                    selectedHashtags.push(tag);
+                    element.style.background = 'rgba(255, 217, 61, 0.3)';
+                }
+            }
+            document.getElementById('selectedHashtags').textContent = selectedHashtags.join(' ');
+        }
+
+        function generateDescription() {
+            const idea = document.getElementById('idea').value;
+            const autoDesc = `In this video, I share: ${idea}\n\nWhat you'll learn:\n✅ Key insights\n✅ Practical tips\n✅ Real-life examples\n\n👍 Don't forget to LIKE and SUBSCRIBE for more content!\n\n📱 Follow us:\nInstagram: @yourhandle\nTwitter: @yourhandle`;
+            
+            if (!document.getElementById('description').value) {
+                document.getElementById('description').value = autoDesc;
+            }
+        }
+
+        function updateSummary() {
+            document.getElementById('summaryTitle').textContent = document.getElementById('title').value || 'Not set';
+            
+            const platforms = Array.from(document.querySelectorAll('.platform:checked'))
+                .map(p => p.value)
+                .join(', ');
+            document.getElementById('summaryPlatforms').textContent = platforms || 'None selected';
+
+            const date = document.getElementById('scheduleDate').value;
+            const time = document.getElementById('scheduleTime').value;
+            document.getElementById('summarySchedule').textContent = date && time ? `${date} at ${time}` : 'Not set';
+        }
+
+        function publishVideo() {
+            const title = document.getElementById('title').value;
+            const platforms = Array.from(document.querySelectorAll('.platform:checked'))
+                .map(p => p.value);
+            const date = document.getElementById('scheduleDate').value;
+            const time = document.getElementById('scheduleTime').value;
+
+            if (!title || platforms.length === 0 || !date || !time) {
+                alert('Please complete all fields before publishing!');
+                return;
+            }
+
+            // Save to localStorage
+            const videoData = {
+                idea: document.getElementById('idea').value,
+                research: document.getElementById('research').value,
+                script: document.getElementById('script').value,
+                voiceStyle: document.getElementById('voiceStyle').value,
+                language: document.getElementById('language').value,
+                title: title,
+                description: document.getElementById('description').value,
+                hashtags: selectedHashtags,
+                platforms: platforms,
+                scheduleDate: date,
+                scheduleTime: time,
+                publishedAt: new Date().toISOString()
+            };
+
+            const videos = JSON.parse(localStorage.getItem('shotcraftVideos') || '[]');
+            videos.push(videoData);
+            localStorage.setItem('shotcraftVideos', JSON.stringify(videos));
+
+            alert(`🎉 SUCCESS!\n\nYour video "${title}" has been scheduled for publishing!\n\nPlatforms: ${platforms.join(', ')}\nDate: ${date} at ${time}\n\n✅ Create another video?`);
+
+            // Reset form
+            document.getElementById('idea').value = '';
+            document.getElementById('research').value = '';
+            document.getElementById('script').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            selectedHashtags = [];
+            currentStage = 1;
+            updateUI();
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initializeStages();
+            updateUI();
+        };
+    </script>
+</body>
+</html>
